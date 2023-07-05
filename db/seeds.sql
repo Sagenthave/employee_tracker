@@ -1,19 +1,21 @@
-DROP DATABASE IF EXISTS tracker_db;
-CREATE DATABASE tracker_db;
+-- DEPARTMENT NAMES
+INSERT INTO department
+    (id, name)
+VALUES
+    (1, 'Sales'),
+    (2, 'Accounting'),
+    (3, 'Tech'),
+    (4, 'Legal');
 
-USE tracker_db;
+-- ROLE IDS
+INSERT INTO roles
+    (id, title, salary, department_id)
+VALUES ()
 
-CREATE TABLE department (
-  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(30) NOT NULL
-);
 
-CREATE TABLE roles_names (
-  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(30) NOT NULL,
-  department INT,
-  FOREIGN KEY (department)
-  REFERENCES department(id)
-  ON DELETE SET NULL
-);
+
+-- EMPLOYEE NAMES
+INSERT INTO employees
+    (id, first_name, last_name, role_id, manager_id)
+VALUES ()
 
