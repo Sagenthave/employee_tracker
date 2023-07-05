@@ -82,7 +82,8 @@ function startTracker() {
         })
     }
     const viewAllRoles= () => {
-        db.query('select * from roles', (err, response) => {
+        // db.query('select * from roles', (err, response) => {
+            db.query('select roles.title AS `Type of Role`,roles.salary AS `Salary`,department.name AS Department FROM roles INNER JOIN department ON roles.department_id = department.id;', (err, response) => {
             if (err) {console.log('error')} 
             console.table(response);
             startTracker()
@@ -98,33 +99,35 @@ function startTracker() {
 
 
     const addRole= () => {
-        db.query('select * from roles', (err, response) => {
+        db.query('select * from department', (err, response) => {
             if (err) {console.log('error')} 
-    const departmentData = response.map((department) => ({
-        name:department.name, value:department.id
-    }))
-        //     console.table(response);
-        //     startTracker()
-    inquirer
-    .prompt({
-      name: "title",
-      type: "input",
-      message: "What is the role you would like to add?",
-    }, {
-        name: "salary",
-        type: "input",
-        message: "What is the salary of the new role?",
-      },{
-        name: "department",
-        type: "list",
-        message: "What is the department?",
-        choices: departmentData
-      }).then(response => {
+            const departmentData = response.map((department) => 
+            ({ name:department.name, value:department.id   })
+            )
+           
+            
+  
+    inquirer.prompt([
+            {
+                name: "title",
+                type: "input",
+                message: "What is the role you would like to add?",
+            }, {
+                name: "salary",
+                type: "input",
+                message: "What is the salary of the new role?",
+            },{
+                name: "department",
+                type: "list",
+                message: "What is the department?",
+                choices: departmentData,
+      }]).then(response => {
         var newRole = response.title;
         var newSalary = response.salary;
         var newDepartment = response.department;
         // console.log(newRole)
-        db.query('insert into roles (title, salary, department_id) values (?,?,?)', [])
+        db.query('insert into roles (title, salary, department_id) values (?,?,?)', [newRole, newSalary, newDepartment])
+        console.log(`${newRole} role is added.`)
       })
     })
     }
