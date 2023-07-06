@@ -41,7 +41,7 @@ function startTracker() {
         ],
       })
 
-    //USERS INPUT
+//USERS INPUT TO SELECT WHAT THEY WOULD LIKE TO DO IN THE DATABASE
     .then((answer) => {
         switch (answer.action) {
           case "View all departments":
@@ -73,7 +73,7 @@ function startTracker() {
 
     }
     startTracker()
-
+// VIEW ALL DEPARTMENT, ROLES, AND EMPLOYEES AVAILABLE IN THE DATABASE
     const viewAllDepartments= () => {
         db.query('select * from department', (err, response) => {
             if (err) {console.log('error')} 
@@ -97,16 +97,14 @@ function startTracker() {
         })
     }
 
-
+// ADD A ROLE INTO THE DATABASE
     const addRole= () => {
         db.query('select * from department', (err, response) => {
             if (err) {console.log('error')} 
             const departmentData = response.map((department) => 
             ({ name:department.name, value:department.id   })
             )
-           
-            
-  
+
     inquirer.prompt([
             {
                 name: "title",
@@ -131,6 +129,80 @@ function startTracker() {
       })
     })
     }
+
+// ADD AN EMPLOYEE TO THE DATABASE
+const addEmployee = () => {
+    db.query(
+      'SELECT employees.*, roles.title AS role_name, manager.first_name AS manager_name FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN employees AS manager ON employees.manager_id = manager.id;',
+      (err, response) => {
+        if (err) {
+          console.log('error');
+          return;
+        }
+        const managerName = response.map((manager) => ({
+          name: manager.first_name + ' ' + manager.last_name,
+          value: manager.id,
+        }));
+        db.query('SELECT * FROM roles', (err, response) => {
+          if (err) {
+            console.log('error');
+            return;
+          }
+          const roleData = response.map((role) => ({
+            name: role.title,
+            value: role.id,
+          }));
+          inquirer
+            .prompt([
+              {
+                name: 'firstName',
+                type: 'input',
+                message: "What is the employee's first name?",
+              },
+              {
+                name: 'lastName',
+                type: 'input',
+                message: "What is the employee's last name?",
+              },
+              {
+                name: 'manager',
+                type: 'list',
+                message: 'Who is their manager?',
+                choices: managerName,
+              },
+              {
+                name: 'role',
+                type: 'list',
+                message: "What is the employee's role?",
+                choices: roleData,
+              },
+            ])
+            .then((response) => {
+              db.query(
+                'INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)',
+                [
+                  response.firstName,
+                  response.lastName,
+                  response.role,
+                  response.manager,
+                ],
+                (err, response) => {
+                  if (err) {
+                    console.log('error');
+                    return;
+                  }
+                  console.log(`${response.firstName} is added.`);
+                }
+              );
+            });
+        });
+      }
+    );
+  };
+//ADD A DEPARTMENT TO THE DATABASE
+
+// UPDATE AN EMPLOYEES INFORMATION IN THE DATABASE
+
 
 // app.listen(PORT, () => {
 //     console.log(`SERVER RUNNING ON POST ${PORT}`)
