@@ -73,7 +73,7 @@ function startTracker() {
 
     }
     startTracker()
-// VIEW ALL DEPARTMENT, ROLES, AND EMPLOYEES AVAILABLE IN THE DATABASE
+// VIEW ALL DEPARTMENTs, ROLES, AND EMPLOYEES AVAILABLE IN THE DATABASE
     const viewAllDepartments= () => {
         db.query('select * from department', (err, response) => {
             if (err) {console.log('error')} 
@@ -90,7 +90,7 @@ function startTracker() {
         })
     }
     const viewAllEmployees= () => {
-        db.query('select * from employees', (err, response) => {
+        db.query('SELECT employees.id,employees.first_name, employees.last_name, department.name AS Department,roles.title ,roles.salary AS `Employee Salary`,manager.first_name AS Manager from employees  INNER JOIN roles ON employees.role_id = roles.id INNER JOIN department ON roles.department_id = department.id  LEFT JOIN employees AS Manager ON employees.manager_id = manager.id', (err, response) => {
             if (err) {console.log('error')} 
             console.table(response);
             startTracker()
@@ -152,6 +152,7 @@ const addEmployee = () => {
             name: role.title,
             value: role.id,
           }));
+          
           inquirer
             .prompt([
               {
@@ -176,6 +177,12 @@ const addEmployee = () => {
                 message: "What is the employee's role?",
                 choices: roleData,
               },
+              {
+                name: 'department',
+                type: 'list',
+                message: 'What is their department?',
+                choices: departmentData,
+              }
             ])
             .then((response) => {
               db.query(
@@ -191,18 +198,77 @@ const addEmployee = () => {
                     console.log('error');
                     return;
                   }
-                  console.log(`${response.firstName} is added.`);
+                  
                 }
               );
+                console.log(`${response.firstName} ${response.lastName} is added.`);
             });
         });
       }
     );
   };
+
 //ADD A DEPARTMENT TO THE DATABASE
+const addDepartment= () => {
+    // db.query('select * from department', (err, response) => {
+    //     if (err) {console.log('error')} 
+    //     const departmentData = response.map((department) => 
+    //     ({ name:department.name, value:department.id   })
+    //     )
+
+inquirer.prompt([
+        {
+            name: "name",
+            type: "input",
+            message: "What is the department you would like to add?",
+        },
+  ]).then(response => {
+    var newDepartment = response.name;
+    db.query('insert into department (name) values (?)', [newDepartment])
+    console.log(`${newDepartment} department is added.`)
+  })
+// })
+}
 
 // UPDATE AN EMPLOYEES INFORMATION IN THE DATABASE
+const updateEmployeeRole = () => {
+    db.query('select * from employees', (err, response) => {
+        if (err) {console.log('error')} 
+          const employeeData = response.map((employee) => 
+          ({ name:employee.first_name + ' ' + employee.last_name, value:employee.id}))
+          db.query('SELECT * FROM roles', (err, response) => {
+            if (err) {
+              console.log('error');
+              return;
+            }
+            const roleData = response.map((role) => ({
+              name: role.title,
+              value: role.id,
+            }));
+        inquirer
+        .prompt ([{
+            name: "employees",
+            type: "list",
+            message: "Select the employee to update:",
+            choices: employeeData,
+          },
+          {
+            name: "role",
+            type: "list",
+            message: "Select the role to update:",
+            choices: roleData,
+          }]).then((response) => {
+            const updateRole = response.role; 
+            const updateEmployee = response.employees;
+            db.query(`Update employees set role_id = ? where id = ? ;`, [updateRole, updateEmployee], (error) => {
+                if (err) console.log(error);
+            })
+            console.log (`Role has been updated`)
+            startTracker()
+          })
+    })})
 
+}
 
 // app.listen(PORT, () => {
 //     console.log(`SERVER RUNNING ON POST ${PORT}`)
