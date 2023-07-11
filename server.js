@@ -152,10 +152,14 @@ const addEmployee = () => {
             name: role.title,
             value: role.id,
           }));
-          
+          const departmentData = response.map((department) => ({
+            name: department.name,
+            value: department.id,
+          }));
           inquirer
             .prompt([
               {
+                
                 name: 'firstName',
                 type: 'input',
                 message: "What is the employee's first name?",

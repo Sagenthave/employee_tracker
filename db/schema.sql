@@ -26,8 +26,11 @@ id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 first_name VARCHAR(255) NOT NULL,
 last_name VARCHAR(255) NOT NULL,
 role_id INT
+department_id INT 
 FOREIGN KEY (role_id)
 REFERENCES roles(id)
+FOREIGN KEY (department_id)
+REFERENCES department(id)
 On DELETE cascade,
 manager_id INT,
 FOREIGN KEY (manager_id)
