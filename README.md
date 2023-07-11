@@ -1,5 +1,7 @@
 # employee_tracker
 
+![screenshot](/Screenshot%202023-07-11%20at%207.44.37%20PM.png)
+
 ## User Story
 - AS A business owner
 - I WANT to be able to view and manage the departments, roles, and employees in my company
