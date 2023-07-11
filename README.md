@@ -26,7 +26,8 @@
 
 ## Credits
 - Krishna (Assistant Instructor)
+- Tareque Moatar (Assistant Instructor)
 
 ## Deployment 
-- GitHub: 
-- Demonstration Video: 
+- GitHub: https://github.com/Sagenthave/employee_tracker
+- Demonstration Video: https://drive.google.com/file/d/1JrWIzeLfSICitplNexhXHnQD4P15w6Zf/view 
